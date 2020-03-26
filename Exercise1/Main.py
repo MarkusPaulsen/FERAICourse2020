@@ -53,10 +53,13 @@ class Main:
     def uniform_cost_search(self):
         self._open = (
             just(
-                self._graph.get_graph()
+                self._graph
             )
             .pipe(map(
-                lambda graph: (graph[self._graph.get_initial_state()], 0, [])
+                lambda graph_object: (graph_object.get_graph(), graph_object.get_initial_state())
+            ))
+            .pipe(map(
+                lambda graph_info: (graph_info[0][graph_info[1]], 0, [])
             ))
             .pipe(to_list())
             .run()
@@ -74,10 +77,10 @@ class Main:
             found_goal_state: bool = (
                 just(self._graph)
                 .pipe(map(
-                    lambda graph_object: graph_object.get_graph()
+                    lambda graph: (graph.get_graph(), graph.get_goal_state())
                 ))
                 .pipe(map(
-                    lambda graph: graph[self._graph.get_goal_state()]
+                    lambda graph_info: graph_info[0][graph_info[1]]
                 ))
                 .pipe(map(
                     lambda goal_state: goal_state.get_name()
@@ -99,8 +102,11 @@ class Main:
                 )
                 (
                     from_list(open_tuple[2])
+                    .pipe(map(
+                        lambda predecessor: predecessor.get_name()
+                    ))
                     .subscribe(
-                        on_next=lambda predecessor: print(predecessor.get_name() + " =>")
+                        on_next=lambda predecessor_name: print(predecessor_name + " =>")
                     )
                 )
                 print(open_tuple[0].get_name())
@@ -139,6 +145,99 @@ class Main:
         print("No route found")
         return
 
+    def a_star_search(self):
+        self._open = (
+            just(self._graph)
+            .pipe(map(
+                lambda graph_object: (graph_object.get_graph(), graph_object.get_initial_state())
+            ))
+            .pipe(map(
+                lambda graph_info: (graph_info[0][graph_info[1]], 0, [])
+            ))
+            .pipe(to_list())
+            .run()
+        )
+        while self._open:
+            open_tuple: Tuple[City, int, List[City]] = (
+                just(self._open)
+                .pipe(map(
+                    lambda open_list: open_list.pop(0)
+                ))
+                .pipe(first())
+                .run()
+            )
+            self._closed.append(open_tuple[0].get_name())
+            found_goal_state: bool = (
+                just(self._graph)
+                .pipe(map(
+                    lambda graph_object: (graph_object.get_graph(), graph_object.get_goal_state())
+                ))
+                .pipe(map(
+                    lambda graph_info: graph_info[0][graph_info[1]]
+                ))
+                .pipe(map(
+                    lambda goal_state: goal_state.get_name()
+                ))
+                .pipe(map(
+                    lambda goal_state_name: goal_state_name == open_tuple[0].get_name()
+                ))
+                .pipe(first())
+                .run()
+            )
+            if found_goal_state:
+                print("States visited = " + str((len(self._closed))))
+                print(
+                    "Found path of length "
+                    + str((len(open_tuple[2]) + 1))
+                    + " with total cost "
+                    + str(open_tuple[1])
+                    + ":"
+                )
+                (
+                    from_list(open_tuple[2])
+                    .pipe(map(
+                        lambda predecessor: predecessor.get_name()
+                    ))
+                    .subscribe(
+                        on_next=lambda predecessor_name: print(predecessor_name + " =>")
+                    )
+                )
+                print(open_tuple[0].get_name())
+                return
+            preliminary_open: List[Tuple[City, int, List[City]]] = []
+            (
+                just(open_tuple[0])
+                .pipe(flat_map(
+                    lambda current_city: current_city.get_roads()
+                ))
+                .pipe(map(
+                    lambda road: (road.get_to(), road.get_cost())
+                ))
+                .pipe(filter(
+                    lambda road_info: road_info[0] not in self._closed
+                ))
+                .subscribe(
+                    on_next=lambda road_info: preliminary_open.append(
+                        (
+                            self._graph.get_graph()[road_info[0]],
+                            open_tuple[1] + road_info[1],
+                            open_tuple[2] + [open_tuple[0]]
+                        )
+                    )
+                )
+            )
+            preliminary_open.sort(key=lambda x: x[1]+x[0].get_heuristic_value())
+            self._open = (
+                just(self._open)
+                .pipe(map(
+                    lambda open_list: open_list + preliminary_open
+                ))
+                .pipe(first())
+                .run()
+            )
+        print("No route found")
+        return
+
     def clean(self):
         self._open: List[Tuple[City, int, List[City]]] = []
         self._closed: List[str] = []
@@ -152,3 +251,6 @@ if __name__ == '__main__':
     main_node.clean()
     print("Uniform cost search:")
     main_node.uniform_cost_search()
+    main_node.clean()
+    print("A* search:")
+    main_node.a_star_search()

@@ -54,9 +54,9 @@ class Graph:
             roads: List[Road] = []
             heuristic_value = heuristics_dict[name]
             for road_nr in range(1, len(space_splited_line)):
-                road_splited: List[str] = space_splited_line[road_nr].split(",")
-                road_to: str = road_splited[0]
-                road_cost: int = int(road_splited[1])
+                road_splitted: List[str] = space_splited_line[road_nr].split(",")
+                road_to: str = road_splitted[0]
+                road_cost: int = int(road_splitted[1])
                 roads.append(Road(road_to, road_cost))
             self.add_graph_entry(name=name, heuristic_value=heuristic_value, roads=roads)
 
