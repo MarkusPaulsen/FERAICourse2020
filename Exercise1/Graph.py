@@ -1,7 +1,10 @@
 from typing import *
-from Exercise1.City import City
-from Exercise1.Road import Road
-
+#Jorge build
+from FERAICourse2020.Exercise1.City import City
+from FERAICourse2020.Exercise1.Road import Road
+#Markus build
+#from Exercise1.City import City
+#from Exercise1.Road import Road
 
 class Graph:
     def __init__(self, state_space_path: str, heuristics_path: str):

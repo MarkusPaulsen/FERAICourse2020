@@ -4,8 +4,14 @@ from rx.operators import map, to_list, filter, flat_map, first
 # </editor-fold>
 
 from typing import *
-from Exercise1.City import City
-from Exercise1.Graph import Graph
+
+#Jorge Build
+from FERAICourse2020.Exercise1.City import City
+from FERAICourse2020.Exercise1.Graph import Graph
+#Markus Build
+#from Exercise1.City import City
+#from Exercise1.Graph import Graph
+
 
 
 # noinspection DuplicatedCode

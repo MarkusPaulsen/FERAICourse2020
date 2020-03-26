@@ -1,6 +1,8 @@
 from typing import *
-from Exercise1.Road import Road
-
+#Jorge Build
+from FERAICourse2020.Exercise1.Road import Road
+#Markus Build
+#from Exercise1.Road import Road
 
 class City:
     def __init__(self, name: str, heuristic_value: int, roads: List[Road]):
