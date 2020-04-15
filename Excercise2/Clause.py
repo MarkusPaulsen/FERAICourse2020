@@ -59,8 +59,7 @@ class Clause:
                 self._instructionsList.append((line.lower()).strip("\n *"))
 
 
-    def negate(self, exp: str):
-
+    def negate(self, exp: str)-> str:
         atoms: str = exp.split(" ")
         print(atoms)
         out: str=""
@@ -70,14 +69,12 @@ class Clause:
             else:
                 char = char.replace(char, "~"+char)
             out+=" "+char
-            
-        print("NEGATE FNC----->"+out)#temp change
-        self.appendClause(out)
+
+        return out
 
 
     def appendClause(self, n_cls: str):
         if n_cls.__contains__("~v"):
-            print("CONTIENE DISJOINT")
             n_cls.replace("~v", "*")
             additionalClause: List[str] = (n_cls.split("~v"))
             for l in additionalClause:
@@ -85,4 +82,24 @@ class Clause:
         else:
             self._clausesList.append(n_cls.strip("\n*").lower())
             
-        print(self._clausesList)
+    def operateClauses(self, lastClause: str):
+
+        if lastClause.__contains__("~"):
+            tempClasue = lastClause.replace("~","")
+            for c in self.get_clausesList():
+                if c.__contains__(tempClasue):
+                    if c.__contains__("v"):
+                        print("COntiene V")
+                        c= c.replace(" v"+tempClasue,"")
+
+                    c = c.replace(tempClasue, "")
+                    self.appendClause(c)
+                    break
+        else:
+            for c in self.get_clausesList():
+                if c.__contains__("~"+lastClause):
+                    if c.__contains__("v"):
+                        c= c.replace(" v "+lastClause,"")
+                    c = c.replace(lastClause, "")
+                    self.appendClause(c)
+                    break

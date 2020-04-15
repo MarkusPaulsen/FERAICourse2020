@@ -25,4 +25,12 @@ if __name__ == '__main__':
 
     print(caso.get_clausesList())
     print(caso.get_goalClause())
-    caso.negate("~a v b")
+    #caso.appendClause(caso.negate("~a v b"))
+    caso.set_goalClause(caso.negate(caso.get_goalClause()))
+
+    caso.appendClause(caso.get_goalClause())
+    caso.operateClauses(caso.get_goalClause())
+
+    print("############################################\n")
+    print(caso.get_clausesList())
+    
