@@ -38,17 +38,16 @@ class Clause:
                 if line.__contains__("#"):
                     continue
 
-                if line.__contains__(" "):#Is a clause
-                    if line.__contains__("~v"):
-                        print("CONTIENE DISJOINT")
-                        line.replace("~v","*")
-                        additionalClause: List[str] = (line.split("~v"))
-                        for l in additionalClause:
-                            self._clausesList.append(l.strip("\n *").lower())
-                    else:
-                        self._clausesList.append(line.strip("\n*").lower())
+                if line.__contains__("~v"):
+                    print("CONTIENE DISJOINT")
+                    line.replace("~v","*")
+                    additionalClause: List[str] = (line.split("~v"))
+                    for l in additionalClause:
+                        self._clausesList.append(l.strip("\n *").lower())
                 else:
-                        self._atomList.append(line.strip("\n*").lower())
+                    self._clausesList.append(line.strip("\n*").lower())
+
+                    self._atomList.append(line.strip("\n*").lower())
 
             self.set_goalClause(self._clausesList[-1])
             self._clausesList.remove(self.get_goalClause())
@@ -58,3 +57,32 @@ class Clause:
                 if line.__contains__("#"):
                     continue
                 self._instructionsList.append((line.lower()).strip("\n *"))
+
+
+    def negate(self, exp: str):
+
+        atoms: str = exp.split(" ")
+        print(atoms)
+        out: str=""
+        for char in atoms:
+            if char.__contains__("~"):
+                char = char.replace("~","")
+            else:
+                char = char.replace(char, "~"+char)
+            out+=" "+char
+            
+        print("NEGATE FNC----->"+out)#temp change
+        self.appendClause(out)
+
+
+    def appendClause(self, n_cls: str):
+        if n_cls.__contains__("~v"):
+            print("CONTIENE DISJOINT")
+            n_cls.replace("~v", "*")
+            additionalClause: List[str] = (n_cls.split("~v"))
+            for l in additionalClause:
+                self._clausesList.append(l.strip("\n *").lower())
+        else:
+            self._clausesList.append(n_cls.strip("\n*").lower())
+            
+        print(self._clausesList)

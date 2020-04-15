@@ -20,8 +20,9 @@ def plResolution()://Sketch
 if __name__ == '__main__':
 
     caso = Clause()
-    caso.readFile("Files/cooking_examples/chicken_alfredo.txt")
-    caso.readFile("Files/cooking_examples/chicken_alfredo_input.txt")
-    print(caso.get_atomList())
+    caso.readFile("Files/resolution_examples/small_example.txt")
+
+
     print(caso.get_clausesList())
-    print(caso.get_instructionsList())
+    print(caso.get_goalClause())
+    caso.negate("~a v b")
