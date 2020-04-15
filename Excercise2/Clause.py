@@ -24,6 +24,9 @@ class Clause:
     def get_clausesList(self) -> List[str]:
         return self._clausesList
 
+    def get_last_clausesList(self) -> List[str]:
+        return self._clausesList[-1]
+
     def set_clausesList(self, clausesList: List[str]):
         self._clausesList = clausesList
 
@@ -68,8 +71,10 @@ class Clause:
                 char = char.replace("~","")
             else:
                 char = char.replace(char, "~"+char)
-            out+=" "+char
-
+            if atoms.__contains__("v"):
+                out+=" "+char
+            out +=char
+            print("-------"+out+"------------\n")
         return out
 
 
@@ -83,23 +88,32 @@ class Clause:
             self._clausesList.append(n_cls.strip("\n*").lower())
             
     def operateClauses(self, lastClause: str):
-
+        print("Last clause is --> " + lastClause)
         if lastClause.__contains__("~"):
             tempClasue = lastClause.replace("~","")
+            print("TEMP clause is --> " + tempClasue)
             for c in self.get_clausesList():
-                if c.__contains__(tempClasue):
+                if c.__contains__(" "+tempClasue) or c==tempClasue:
+                    print("Found--> "+c)
                     if c.__contains__("v"):
-                        print("COntiene V")
-                        c= c.replace(" v"+tempClasue,"")
-
+                        print("Has v \n")
+                        print(c)
+                        c= c.replace(" v "+tempClasue,"")
+                        c = c.replace(tempClasue +" v " , "")
                     c = c.replace(tempClasue, "")
+                    print(c+"*****\n")
+                    if c=="" :
+                        c="NILL"
                     self.appendClause(c)
                     break
         else:
             for c in self.get_clausesList():
                 if c.__contains__("~"+lastClause):
                     if c.__contains__("v"):
-                        c= c.replace(" v "+lastClause,"")
+                        c= c.replace(" v"+lastClause,"")
+                        c = c.replace(lastClause+"v ", "")
                     c = c.replace(lastClause, "")
+                    if c == "":
+                        c = "NILL"
                     self.appendClause(c)
                     break
