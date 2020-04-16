@@ -107,13 +107,15 @@ class Clause:
                     self.appendClause(c)
                     break
         else:
+            tempClasue = "~"+lastClause
             for c in self.get_clausesList():
-                if c.__contains__("~"+lastClause):
+                if c.__contains__(tempClasue):
                     if c.__contains__("v"):
-                        c= c.replace(" v"+lastClause,"")
-                        c = c.replace(lastClause+"v ", "")
-                    c = c.replace(lastClause, "")
+                        c = c.replace(" v " + tempClasue, "")
+                        c = c.replace(tempClasue + " v ", "")
+                    c = c.replace(tempClasue, "")
                     if c == "":
                         c = "NILL"
                     self.appendClause(c)
+                    print(c)
                     break

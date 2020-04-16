@@ -31,11 +31,12 @@ if __name__ == '__main__':
     caso.appendClause(caso.get_goalClause())
     caso.operateClauses(caso.get_goalClause())
 
+caso.operateClauses("")
 
+"""""""""""""""""
     while not(caso.get_clausesList().__contains__("nill")):
         caso.operateClauses(caso.get_last_clausesList())
         print(caso.get_clausesList())
-"""""""""""""""""
     print("############################################\n")
     print(caso.get_clausesList())
     caso.operateClauses(caso.get_last_clausesList())
