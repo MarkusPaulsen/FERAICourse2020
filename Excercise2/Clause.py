@@ -82,40 +82,65 @@ class Clause:
         if n_cls.__contains__("~v"):
             n_cls.replace("~v", "*")
             additionalClause: List[str] = (n_cls.split("~v"))
+
             for l in additionalClause:
                 self._clausesList.append(l.strip("\n *").lower())
         else:
             self._clausesList.append(n_cls.strip("\n*").lower())
             
-    def operateClauses(self, lastClause: str):
+    def operateClauses(self, lastClause: str)-> int:
+        atomsLastClause: List[str] = []
         print("Last clause is --> " + lastClause)
-        if lastClause.__contains__("~"):
-            tempClasue = lastClause.replace("~","")
-            print("TEMP clause is --> " + tempClasue)
-            for c in self.get_clausesList():
-                if c.__contains__(" "+tempClasue) or c==tempClasue:
-                    print("Found--> "+c)
-                    if c.__contains__("v"):
-                        print("Has v \n")
-                        print(c)
-                        c= c.replace(" v "+tempClasue,"")
-                        c = c.replace(tempClasue +" v " , "")
-                    c = c.replace(tempClasue, "")
-                    print(c+"*****\n")
-                    if c=="" :
-                        c="NILL"
-                    self.appendClause(c)
-                    break
+        if(lastClause.__contains__("v")):
+            atomsLastClausetemp: List[str] = (lastClause.split("v"))
+            for atom in atomsLastClausetemp:
+                atom=atom.strip(" ")
+                atomsLastClause.append(atom)
+            print("atomsLastClauselist----> ")
+            print(atomsLastClause)
+            print("\n")
         else:
-            tempClasue = "~"+lastClause
-            for c in self.get_clausesList():
-                if c.__contains__(tempClasue):
-                    if c.__contains__("v"):
-                        c = c.replace(" v " + tempClasue, "")
-                        c = c.replace(tempClasue + " v ", "")
-                    c = c.replace(tempClasue, "")
-                    if c == "":
-                        c = "NILL"
-                    self.appendClause(c)
-                    print(c)
-                    break
+            atomsLastClause.append(lastClause)
+        for items in atomsLastClause:
+            if items.__contains__("~"):
+                tempClasue = items.replace("~","")
+                print("TEMP clause is --> " + tempClasue)
+                for c in self.get_clausesList():
+                    if c.__contains__(" "+tempClasue) or c==tempClasue:
+                        print("Found--> "+c)
+                        if c.__contains__("v"):
+                            print("Has v \n")
+                            print(c)
+                            c= c.replace(" v "+tempClasue,"")
+                            c = c.replace(tempClasue +" v " , "")
+                        c = c.replace(tempClasue, "")
+                        print(c+"*****\n")
+                        if c=="" :
+                            c="NILL"
+                        if c == self._clausesList[-1]:
+                            return 0
+                        self.appendClause(c)
+                        return 1
+
+                        break
+            else:
+                tempClasue = "~"+items
+                for c in self.get_clausesList():
+                    if c.__contains__(" "+tempClasue) or c==tempClasue:
+                        if c.__contains__("v"):
+                            c = c.replace(" v " + tempClasue, "")
+                            c = c.replace(tempClasue + " v ", "")
+                        c = c.replace(tempClasue, "")
+                        if c == "":
+                            c = "NILL"
+                        if not c == self._clausesList[-1]:
+                            print("xxxxxxxxxxx REPETIDA\n")
+                            self.appendClause(c)
+                            return 0
+
+
+
+                        self.appendClause(c)
+                        return 1
+                        break
+        atomsLastClause.clear()
