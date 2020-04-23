@@ -111,7 +111,8 @@ class Clause:
                             print(c)
                             c = c.replace(" v " + temp_clasue, "")
                             c = c.replace(temp_clasue + " v ", "")
-                        c = c.replace(temp_clasue, "")
+                        else:
+                            c = c.replace(temp_clasue, "")
                         print(c + "*****\n")
                         if c == "":
                             c = "NILL"
@@ -126,7 +127,8 @@ class Clause:
                         if c.__contains__("v"):
                             c = c.replace(" v " + temp_clasue, "")
                             c = c.replace(temp_clasue + " v ", "")
-                        c = c.replace(temp_clasue, "")
+                        else:
+                            c = c.replace(temp_clasue, "")
                         if c == "":
                             c = "NILL"
                         if not c == self._clauses_list[-1]:
