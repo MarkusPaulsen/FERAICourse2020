@@ -1,146 +1,139 @@
-from typing import List, Dict
+from typing import *
+
+
+# noinspection PyMethodMayBeStatic
 class Clause:
     def __init__(self):
-        self._atomList: List[str] = []
-        self._clausesList: List[str] = []
-        self._instructionsList: List[str] = []
-        self._goalClause: str = ""
-    def get_goalClause(self) -> str:
-        return self._goalClause
+        self._atom_list: List[str] = []
+        self._clauses_list: List[str] = []
+        self._instructions_list: List[str] = []
+        self._goal_clause: str = ""
 
-    def set_goalClause(self, goalClause: str):
-        self._goalClause = goalClause
-    def get_atomList(self) -> List[str]:
-        return self._atomList
+    def get_atom_list(self) -> List[str]:
+        return self._atom_list
 
-    def set_instructionsList(self, instructionsList: List[str]):
-        self._instructionsList = instructionsList
-    def get_instructionsList(self) -> List[str]:
-        return self._instructionsList
+    def set_atom_list(self, atom_list: List[str]):
+        self._atom_list = atom_list
 
-    def set_atomList(self, atomList: List[str]):
-        self._atomList = atomList
+    def get_clauses_list(self) -> List[str]:
+        return self._clauses_list
 
-    def get_clausesList(self) -> List[str]:
-        return self._clausesList
+    def set_clauses_list(self, clauses_list: List[str]):
+        self._clauses_list = clauses_list
 
-    def get_last_clausesList(self) -> List[str]:
-        return self._clausesList[-1]
+    def get_instructions_list(self) -> List[str]:
+        return self._instructions_list
 
-    def set_clausesList(self, clausesList: List[str]):
-        self._clausesList = clausesList
+    def set_instructions_list(self, instructions_list: List[str]):
+        self._instructions_list = instructions_list
 
+    def get_goal_clause(self) -> str:
+        return self._goal_clause
 
-    def readFile(self, path: str):
+    def set_goal_clause(self, goal_clause: str):
+        self._goal_clause = goal_clause
+
+    def get_last_clauses_list(self) -> str:
+        return self._clauses_list[-1]
+
+    def read_file(self, path: str, last_clause_goal: bool):
         doc = open(path, encoding="utf8")
         doc_lines: List[str] = doc.readlines()
-
         if not path.__contains__("input"):
             for line in doc_lines:
-
                 if line.__contains__("#"):
                     continue
-
                 if line.__contains__("~v"):
                     print("CONTIENE DISJOINT")
-                    line.replace("~v","*")
-                    additionalClause: List[str] = (line.split("~v"))
-                    for l in additionalClause:
-                        self._clausesList.append(l.strip("\n *").lower())
+                    line.replace("~v", "*")
+                    additional_clause_list: List[str] = (line.split("~v"))
+                    for additional_clause_element in additional_clause_list:
+                        self._clauses_list.append(additional_clause_element.strip("\n *").lower())
                 else:
-                    self._clausesList.append(line.strip("\n*").lower())
-
-                    self._atomList.append(line.strip("\n*").lower())
-
-            self.set_goalClause(self._clausesList[-1])
-            self._clausesList.remove(self.get_goalClause())
-
+                    self._clauses_list.append(line.strip("\n*").lower())
+                    self._atom_list.append(line.strip("\n*").lower())
+            if last_clause_goal:
+                self.set_goal_clause(self._clauses_list[-1])
+                self._clauses_list.remove(self.get_goal_clause())
         else:
             for line in doc_lines:
                 if line.__contains__("#"):
                     continue
-                self._instructionsList.append((line.lower()).strip("\n *"))
+                self._instructions_list.append((line.lower()).strip("\n *"))
 
-
-    def negate(self, exp: str)-> str:
-        atoms: str = exp.split(" ")
+    def negate(self, exp: str) -> str:
+        atoms: List[str] = exp.split(" ")
         print(atoms)
-        out: str=""
+        out: str = ""
         for char in atoms:
             if char.__contains__("~"):
-                char = char.replace("~","")
+                char = char.replace("~", "")
             else:
-                char = char.replace(char, "~"+char)
+                char = char.replace(char, "~" + char)
             if atoms.__contains__("v"):
-                out+=" "+char
-            out +=char
-            print("-------"+out+"------------\n")
+                out += " " + char
+            out += char
+            print("-------" + out + "------------\n")
         return out
 
-
-    def appendClause(self, n_cls: str):
+    def append_clause(self, n_cls: str):
         if n_cls.__contains__("~v"):
             n_cls.replace("~v", "*")
-            additionalClause: List[str] = (n_cls.split("~v"))
+            additional_clause_list: List[str] = (n_cls.split("~v"))
 
-            for l in additionalClause:
-                self._clausesList.append(l.strip("\n *").lower())
+            for additional_clause_element in additional_clause_list:
+                self._clauses_list.append(additional_clause_element.strip("\n *").lower())
         else:
-            self._clausesList.append(n_cls.strip("\n*").lower())
-            
-    def operateClauses(self, lastClause: str)-> int:
-        atomsLastClause: List[str] = []
-        print("Last clause is --> " + lastClause)
-        if(lastClause.__contains__("v")):
-            atomsLastClausetemp: List[str] = (lastClause.split("v"))
-            for atom in atomsLastClausetemp:
-                atom=atom.strip(" ")
-                atomsLastClause.append(atom)
+            self._clauses_list.append(n_cls.strip("\n*").lower())
+
+    def operate_clauses(self, last_clause: str) -> int:
+        atoms_last_clause: List[str] = []
+        print("Last clause is --> " + last_clause)
+        if last_clause.__contains__("v"):
+            atoms_last_clause_temp: List[str] = (last_clause.split("v"))
+            for atom in atoms_last_clause_temp:
+                atom = atom.strip(" ")
+                atoms_last_clause.append(atom)
             print("atomsLastClauselist----> ")
-            print(atomsLastClause)
+            print(atoms_last_clause)
             print("\n")
         else:
-            atomsLastClause.append(lastClause)
-        for items in atomsLastClause:
+            atoms_last_clause.append(last_clause)
+        for items in atoms_last_clause:
             if items.__contains__("~"):
-                tempClasue = items.replace("~","")
-                print("TEMP clause is --> " + tempClasue)
-                for c in self.get_clausesList():
-                    if c.__contains__(" "+tempClasue) or c==tempClasue:
-                        print("Found--> "+c)
+                temp_clasue = items.replace("~", "")
+                print("TEMP clause is --> " + temp_clasue)
+                for c in self.get_clauses_list():
+                    if c.__contains__(" " + temp_clasue) or c == temp_clasue:
+                        print("Found--> " + c)
                         if c.__contains__("v"):
                             print("Has v \n")
                             print(c)
-                            c= c.replace(" v "+tempClasue,"")
-                            c = c.replace(tempClasue +" v " , "")
-                        c = c.replace(tempClasue, "")
-                        print(c+"*****\n")
-                        if c=="" :
-                            c="NILL"
-                        if c == self._clausesList[-1]:
-                            return 0
-                        self.appendClause(c)
-                        return 1
-
-                        break
-            else:
-                tempClasue = "~"+items
-                for c in self.get_clausesList():
-                    if c.__contains__(" "+tempClasue) or c==tempClasue:
-                        if c.__contains__("v"):
-                            c = c.replace(" v " + tempClasue, "")
-                            c = c.replace(tempClasue + " v ", "")
-                        c = c.replace(tempClasue, "")
+                            c = c.replace(" v " + temp_clasue, "")
+                            c = c.replace(temp_clasue + " v ", "")
+                        c = c.replace(temp_clasue, "")
+                        print(c + "*****\n")
                         if c == "":
                             c = "NILL"
-                        if not c == self._clausesList[-1]:
+                        if c == self._clauses_list[-1]:
+                            return 0
+                        self.append_clause(c)
+                        return 1
+            else:
+                temp_clasue = "~" + items
+                for c in self.get_clauses_list():
+                    if c.__contains__(" " + temp_clasue) or c == temp_clasue:
+                        if c.__contains__("v"):
+                            c = c.replace(" v " + temp_clasue, "")
+                            c = c.replace(temp_clasue + " v ", "")
+                        c = c.replace(temp_clasue, "")
+                        if c == "":
+                            c = "NILL"
+                        if not c == self._clauses_list[-1]:
                             print("xxxxxxxxxxx REPETIDA\n")
-                            self.appendClause(c)
+                            self.append_clause(c)
                             return 0
 
-
-
-                        self.appendClause(c)
+                        self.append_clause(c)
                         return 1
-                        break
-        atomsLastClause.clear()
+        atoms_last_clause.clear()
