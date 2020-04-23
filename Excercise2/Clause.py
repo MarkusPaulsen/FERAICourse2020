@@ -1,3 +1,4 @@
+
 from typing import List, Dict
 class Clause:
     def __init__(self):
@@ -109,11 +110,10 @@ class Clause:
                     if c.__contains__(" "+tempClasue) or c==tempClasue:
                         print("Found--> "+c)
                         if c.__contains__("v"):
-                            print("Has v \n")
-                            print(c)
                             c= c.replace(" v "+tempClasue,"")
                             c = c.replace(tempClasue +" v " , "")
-                        c = c.replace(tempClasue, "")
+                        else:
+                            c = c.replace(tempClasue, "")
                         print(c+"*****\n")
                         if c=="" :
                             c="NILL"
