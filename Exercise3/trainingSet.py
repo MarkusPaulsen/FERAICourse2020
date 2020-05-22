@@ -68,3 +68,6 @@ class trainingSet:
 
         doc_config.close()
         doc_training_set.close()
+
+
+
