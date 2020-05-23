@@ -1,4 +1,5 @@
-from typing import *
+#Class that stores the configuration + training set (headers + entries)
+#Class reads the correspondant files an populates the lists
 from FERAICourse2020.Exercise3.Entry import *
 from FERAICourse2020.Exercise3.Configuration import *
 class trainingSet:
@@ -20,7 +21,7 @@ class trainingSet:
         self._entries = entries
 
 
-
+    #Reads files .cfg and csv
     def read_file(self, training_set_path: str, config_path: str):
         doc_training_set = open(training_set_path, encoding="utf8")
         doc_lines: List[str] = doc_training_set.readlines()
@@ -42,10 +43,8 @@ class trainingSet:
                 if not (word == "yes" or word == "no"):
                     temp_entry.append_element(word)
 
-
         doc_config = open(config_path, encoding="utf8")
         doc_config_lines: List[str] = doc_config.readlines()
-        temp_config = Configuration()
 
         for line in doc_config_lines:
             split_line = line.split("=")
@@ -64,7 +63,6 @@ class trainingSet:
                 self.config.set_example_ratio(split_line[1].strip(".\n"))
             else:
                 print("Error in reading Config file")
-
 
         doc_config.close()
         doc_training_set.close()

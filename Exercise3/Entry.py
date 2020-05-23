@@ -1,3 +1,4 @@
+#Class that stores the the information from a ROW in the traaining Set
 from typing import *
 class Entry:
 

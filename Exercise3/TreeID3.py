@@ -1,5 +1,5 @@
+#Class resposible for the storage and operations related with the ID3 tree
 import math
-
 from FERAICourse2020.Exercise3.trainingSet import *
 class TreeID3:
 
@@ -14,8 +14,10 @@ class TreeID3:
         #           ->cold->average information entropy
         self.average_information_header: Dict[str, float] = {}
         # temperature
-        #           ->N.n
+        #           ->Average Information
         self.gain_header: Dict[str, float] = {}
+        # temperature
+        #           ->Gain
 
     def get_attributes_entropy(self) -> Dict[str, Dict]:
         return self.attributes_entropy
@@ -41,7 +43,12 @@ class TreeID3:
     def set_total_entries(self, total_entries: int):
         self._total_entries = total_entries
 
-    def entropy(self, training_set: trainingSet):
+    # Calc of entropy for 2 values p[positive] n[negative]
+    def calc_entropy(p: int, n: int) -> float:
+        return (-p / (p + n)) * (math.log2(p / (p + n))) - ((n / (p + n)) * (math.log2(n / (p + n))))
+
+    def set_calc(self, training_set: trainingSet):
+        #Calc of total Yes and total No Tags
         self.set_yes(0)
         self.set_no(0)
         total_entries: int = 0
@@ -52,18 +59,18 @@ class TreeID3:
             else:
                 self.set_no(self.get_no()+1)
 
-        total_entries = self.get_yes() + self.get_no()
+        self.total_entries.set(self.get_yes() + self.get_no())
 
         general_entropy = self.calc_entropy(self.get_yes(), self.get_no())
 
-        #calc of positive tags for each atribute type
+        # Calc of Yes tags for each attribute type
         index: int = 0
         for header in training_set.get_headers():
             index += 1
             # for each header
-            attributes_sublist: Dict[str,float] = {} # pair entry / n Yes
+            attributes_sublist: Dict[str, float] = {}  # pair entry / number Yes tags
             for entry in training_set.get_entries():
-                #for each row
+                # for each row
                 if entry.get_label():
                     attributes_sublist[entry.row[index]] += 1
                 else:
@@ -75,14 +82,11 @@ class TreeID3:
                 p = typeAttribute
                 individual_entropy = self.calc_entropy(p, n)
 
-
                 attributes_sublist[typeAttribute.key] = (((p+n)/(self.get_yes+self.get_no()))*individual_entropy)
-
-
 
             self.attributes_entropy[header] = attributes_sublist
 
-        #calc of average information per header
+        # Calc of Average information per header
         for header in self.attributes_entropy:
             header_average: float = 0
             for type in header:
@@ -90,7 +94,7 @@ class TreeID3:
 
             self.average_information_header[header.key] = header_average
 
-        #calc of Gain per header
+        # Calc of Gain per header
         for header in self.average_information_header:
             self.gain_header[header.key] = general_entropy - header
 
@@ -98,10 +102,4 @@ class TreeID3:
 
 
 
-
-
-
-
-    def calc_entropy(p: int, n: int) -> float:
-        return (-p / (p + n)) * (math.log2(p / (p + n))) - ((n / (p + n)) * (math.log2(n / (p + n))))
 

@@ -1,4 +1,4 @@
-from typing import *
+#Class that stores the information from .cfg files
 class Configuration:
     def __init__(self, mode,model,max_depth,num_trees,feature_ratio,example_ratio):
         self._mode: int = mode
