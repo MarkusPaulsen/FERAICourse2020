@@ -3,7 +3,7 @@ class Entry:
 
     def __init__(self):
         self._label: bool = False
-        self._row: List[str] = []
+        self.row: List[str] = []
 
     def get_label(self) -> bool:
         return self._label
