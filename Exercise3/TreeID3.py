@@ -7,18 +7,21 @@ class TreeID3:
         self._yes: int = 0
         self._no: int = 0
         self._total_entries = 0
-        self.attributes: Dict[str,Dict] = {}
+        self.attributes_entropy: Dict[str,Dict] = {}
         # temperature
-        #           ->hot->entropy
-        #           ->comfortable->entropy
-        #           ->cold->entropy
-        
+        #           ->hot->average information entropy
+        #           ->comfortable->average information entropy
+        #           ->cold->average information entropy
+        self.average_information_header: Dict[str, float] = {}
+        # temperature
+        #           ->N.n
 
-    def get_attributes(self) -> Dict[str, Dict]:
-        return self._attributes
 
-    def set_attributes(self, attributes: Dict[str, Dict]):
-        self._attributes = attributes
+    def get_attributes_entropy(self) -> Dict[str, Dict]:
+        return self.attributes_entropy
+
+    def set_attributes_entropy(self, attributes_entropy: Dict[str, Dict]):
+        self.attributes_entropy = attributes_entropy
 
     def get_yes(self) -> int:
         return self._yes
@@ -66,14 +69,26 @@ class TreeID3:
                 else:
                     attributes_sublist[entry.row[index]] += 0
 
-            # calc of attribute individual entropy
+            # calc of attribute individual entropy + average info
             for typeAttribute in attributes_sublist:
                 n = self.get_total_entries() - typeAttribute
-                attributes_sublist[typeAttribute.key] = self.calc_entropy(typeAttribute, n)
+                p = typeAttribute
+                individual_entropy = self.calc_entropy(p, n)
 
-            self.attributes[header] = attributes_sublist
+
+                attributes_sublist[typeAttribute.key] = (((p+n)/(self.get_yes+self.get_no()))*individual_entropy)
 
 
+
+            self.attributes_entropy[header] = attributes_sublist
+
+
+        for header in self.attributes_entropy:
+            header_average: float = 0
+            for type in header:
+                header_average += type
+
+            self.average_information_header [header] = header_average
 
 
 
