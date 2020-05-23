@@ -15,7 +15,7 @@ class TreeID3:
         self.average_information_header: Dict[str, float] = {}
         # temperature
         #           ->N.n
-
+        self.gain_header: Dict[str, float] = {}
 
     def get_attributes_entropy(self) -> Dict[str, Dict]:
         return self.attributes_entropy
@@ -82,15 +82,17 @@ class TreeID3:
 
             self.attributes_entropy[header] = attributes_sublist
 
-
+        #calc of average information per header
         for header in self.attributes_entropy:
             header_average: float = 0
             for type in header:
                 header_average += type
 
-            self.average_information_header [header] = header_average
+            self.average_information_header[header.key] = header_average
 
-
+        #calc of Gain per header
+        for header in self.average_information_header:
+            self.gain_header[header.key] = general_entropy - header
 
 
 
