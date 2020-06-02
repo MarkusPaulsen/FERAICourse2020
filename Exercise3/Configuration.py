@@ -1,23 +1,23 @@
-#Class that stores the information from .cfg files
+# Class that stores the information from .cfg files
 class Configuration:
-    def __init__(self, mode,model,max_depth,num_trees,feature_ratio,example_ratio):
-        self._mode: int = mode
-        self._model: int = model
+    def __init__(self, mode: str, model: str, max_depth: int, num_trees: int, feature_ratio: int, example_ratio: int):
+        self._mode: str = mode
+        self._model: str = model
         self._max_depth: int = max_depth
         self._num_trees: int = num_trees
         self._feature_ratio: int = feature_ratio
         self._example_ratio: int = example_ratio
 
-    def get_mode(self) -> int:
+    def get_mode(self) -> str:
         return self._mode
 
-    def set_mode(self, mode: int):
+    def set_mode(self, mode: str):
         self._mode = mode
 
-    def get_model(self) -> int:
+    def get_model(self) -> str:
         return self._model
 
-    def set_model(self, model: int):
+    def set_model(self, model: str):
         self._model = model
 
     def get_max_depth(self) -> int:
