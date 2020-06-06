@@ -22,10 +22,10 @@ class MLTree:
             tree_id_3: TreeID3 = TreeID3(train_dataset_copy)
             best_header_element: Tuple[str, float] = tree_id_3.get_gain_header()[0]
             branch_data_sets: Dict[str, DataSet] = train_dataset_copy.remove_header_element(
-                header_element=best_header_element[0]
+                header_element=best_header_element[0], configuration=train_dataset_copy.get_configuration()
             )
             self._root = TreeNode(
-                depth=0, header_element=best_header_element[0], branch_data_sets=branch_data_sets
+                depth=0, header_element=best_header_element[0], full_data_set=train_dataset, branch_data_sets=branch_data_sets
             )
         self._root.fit()
 
@@ -68,7 +68,7 @@ class MLTree:
                 (zip(test_predictions, test_labels))
             )))
             accuracy = correct / len(test_labels)
-            print((math.floor(accuracy * 100000)) / 100000.0)
+            print((int(round(accuracy * 100000.0))) / 100000.0)
 
     def confusion_matrix(self, test_dataset: DataSet):
         if self._root is not None:

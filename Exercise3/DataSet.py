@@ -23,6 +23,12 @@ class DataSet:
     def set_instance_set(self, instance_set: List[Instance]):
         self._instance_set = instance_set
 
+    def get_configuration(self) -> Optional[Configuration]:
+        return self._configuration
+
+    def set_configuration(self, configuration: Optional[Configuration]):
+        self._configuration = configuration
+
     def all_equal(self) -> Optional[str]:
         labels: List[str] = list(map(
             lambda instance: instance.get_label(),
@@ -37,6 +43,24 @@ class DataSet:
             return reference_element
         else:
             return None
+
+    def find_most_likely(self) -> str:
+        labels: List[str] = list(set(map(
+            lambda instance: instance.get_label(),
+            self._instance_set
+        )))
+        labels.sort()
+        most_likely_label: str = ""
+        nr_most_likely_label: int = 0
+        for label in labels:
+            nr_of_label: int = len(list(filter(
+                lambda instance: instance.get_label() == label,
+                self._instance_set
+            )))
+            if nr_of_label > nr_most_likely_label:
+                nr_most_likely_label = nr_of_label
+                most_likely_label = label
+        return most_likely_label
 
     # Reads files .cfg and .csv
     def read_file(self, training_set_path: str, configuration_path: str):
@@ -66,7 +90,7 @@ class DataSet:
             feature_ratio=int(cls[4][1].strip(".\n")), example_ratio=int(cls[5][1].strip(".\n"))
         )
 
-    def remove_header_element(self, header_element: str) -> dict:
+    def remove_header_element(self, header_element: str, configuration: Optional[Configuration]) -> dict:
         some_dict: Dict[str, DataSet] = {}
         header_element_index = self._instance_header.index(header_element)
         header_element_values = list(set(map(
@@ -89,4 +113,5 @@ class DataSet:
             some_dict[value] = DataSet()
             some_dict[value].set_instance_header(instance_header=new_instance_header)
             some_dict[value].set_instance_set(instance_set=new_instance_set)
+            some_dict[value].set_configuration(configuration=configuration)
         return some_dict
