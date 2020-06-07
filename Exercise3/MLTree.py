@@ -72,6 +72,11 @@ class MLTree:
 
     def confusion_matrix(self, test_dataset: DataSet):
         if self._root is not None:
+            possible_features: List[List[str]] = list(set(map(
+                lambda instance: instance.get_label(),
+                test_dataset.get_instance_set()
+            )))
+            possible_features.sort()
             test_features: List[List[str]] = list(map(
                 lambda instance: instance.get_features(),
                 test_dataset.get_instance_set()
@@ -86,25 +91,12 @@ class MLTree:
                 lambda instance: instance.get_label(),
                 test_dataset.get_instance_set()
             ))
-            tp = len(list(filter(
-                lambda compare: (compare[0] == "yes" or compare[0] == "True")
-                and (compare[1] == "yes" or compare[1] == "True"),
-                (zip(test_predictions, test_labels))
-            )))
-            tn = len(list(filter(
-                lambda compare: (compare[0] == "no" or compare[0] == "False")
-                and (compare[1] == "no" or compare[1] == "False"),
-                (zip(test_predictions, test_labels))
-            )))
-            fn = len(list(filter(
-                lambda compare: (compare[0] == "no" or compare[0] == "False")
-                                and (compare[1] == "yes" or compare[1] == "True"),
-                (zip(test_predictions, test_labels))
-            )))
-            fp = len(list(filter(
-                lambda compare: (compare[0] == "yes" or compare[0] == "True")
-                                and (compare[1] == "no" or compare[1] == "False"),
-                (zip(test_predictions, test_labels))
-            )))
-            print(str(tn) + " " + str(fp))
-            print(str(fn) + " " + str(tp))
+            for true_label in possible_features:
+                confusion_matrix_line = ""
+                for predicted_label in possible_features:
+                    confusion_matrix_line = confusion_matrix_line + str(len(list(filter(
+                        lambda compare: compare[0] == predicted_label
+                                        and compare[1] == true_label,
+                        (zip(test_predictions, test_labels))
+                    )))) + " "
+                print(confusion_matrix_line.strip())
